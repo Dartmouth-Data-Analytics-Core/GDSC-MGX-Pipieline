@@ -1,0 +1,39 @@
+#----- GDSC-Metagenomics Pipeline Configuration File -----# 
+# Authors: v1: Shannon Soucy, modified by Mike Martinez
+#---------------------------------------------------------#
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+# GENERAL SETTINGS
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+sample_csv: "sample_fastq_list_paired.csv"
+layout: "paired"
+proj_dir: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/martinez/MGX-Pipeline"
+tmp_dir: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/martinez/MGX-Pipeline/tmp"
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+# TOOLING
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+kneaddata_path: "kneaddata"
+metaphlan_path: "metaphlan"
+humann_path: "humann"
+multiqc_path: "/dartfs-hpc/rc/home/h/f002z1h/.conda/envs/rnaseq_w/bin/multiqc"
+fastqc_path: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/sullivan/tools/fastqc/FastQC"
+trimmomatic_path: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/sullivan/tools/trimmomatic/Trimmomatic-0.39"
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+# TAXONOMY REFS AND DATABASES
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+metaphlan_db: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/owen/sharedconda/miniconda/envs/metaphlan/lib/python3.10/site-packages/metaphlan/metaphlan_databases"
+#== human
+bowtie_ref: "/dartfs/rc/nosnapshots/G/GMBSR_refs/Hsapiens/GRCh38/dna_index/bowtie2_index"
+#== mouse
+#bowtie_ref: "/dartfs/rc/nosnapshots/G/GMBSR_refs/Mmusculus/GRCm39/dna_index/bowtie2_index"
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+# FUNCTIONAL ANNOTATION
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+nt_db: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/genomic_references/biobakery3/Choco/chocophlan/"
+aa_db: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/genomic_references/biobakery3/uniref/uniref"
+mode: "uniref90" 
+
+
