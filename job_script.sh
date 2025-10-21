@@ -27,7 +27,7 @@ snakemake -s Snakefile \
 	--use-conda \
 	--profile cluster_profile \
 	--rerun-incomplete \
-	--keep-going
+	--keep-going 
 
 #----- END
 echo "End time: $(date)"

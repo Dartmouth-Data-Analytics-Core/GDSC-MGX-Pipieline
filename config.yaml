@@ -1,39 +1,61 @@
 #----- GDSC-Metagenomics Pipeline Configuration File -----# 
-# Authors: v1: Shannon Soucy, modified by Mike Martinez
+# Authors
+#   v1: Shannon Soucy
+#   v2: Mike Martinez
 #---------------------------------------------------------#
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # GENERAL SETTINGS
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#----- Pipeline-specific -----#
 sample_csv: "sample_fastq_list_paired.csv"
 layout: "paired"
-proj_dir: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/martinez/MGX-Pipeline"
-tmp_dir: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/martinez/MGX-Pipeline/tmp"
+proj_dir: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/martinez/GDSC-MGX-Pipeline"
+tmp_dir: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/martinez/GDSC-MGX-Pipeline/tmp"
+
+#----- Metaphlan -----#
+metaphlan_analysis_type: "rel_ab_w_read_stats"  # rel_ab
+# See metaphaln -h for list of possible arguments
+
+#----- Humann3 -----#
+mode: "uniref90" 
+normMethod: "cpm"
+taxons: "uniref90-tol-lca"
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-# TOOLING
+# TOOLING AND DATABASES
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#----- Biobakery tools -----#
 kneaddata_path: "kneaddata"
 metaphlan_path: "metaphlan"
 humann_path: "humann"
+
+#----- Biobakery databases -----#
+nt_db: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/genomic_references/biobakery3/Choco/chocophlan/"
+aa_db: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/genomic_references/biobakery3/uniref/uniref"
+metaphlan_db: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/owen/sharedconda/miniconda/envs/metaphlan/lib/python3.10/site-packages/metaphlan/metaphlan_databases"
+
+#----- Bowtie references -----#
+bowtie_ref: "/dartfs/rc/nosnapshots/G/GMBSR_refs/Hsapiens/GRCh38/dna_index/bowtie2_index"
+#bowtie_ref: "/dartfs/rc/nosnapshots/G/GMBSR_refs/Mmusculus/GRCm39/dna_index/bowtie2_index"
+
+#----- QC tools -----#
 multiqc_path: "/dartfs-hpc/rc/home/h/f002z1h/.conda/envs/rnaseq_w/bin/multiqc"
 fastqc_path: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/sullivan/tools/fastqc/FastQC"
+fastqScreen_path: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/sullivan/tools/fastq-screen/FastQ-Screen-0.14.1/fastq_screen"
+fastqScreen_conf: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/genomic_references/fastq_screen/fastq_screen.conf"
+
+#----- Other -----#
 trimmomatic_path: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/sullivan/tools/trimmomatic/Trimmomatic-0.39"
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-# TAXONOMY REFS AND DATABASES
+# PLOTTING PARAMS
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-metaphlan_db: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/owen/sharedconda/miniconda/envs/metaphlan/lib/python3.10/site-packages/metaphlan/metaphlan_databases"
-#== human
-bowtie_ref: "/dartfs/rc/nosnapshots/G/GMBSR_refs/Hsapiens/GRCh38/dna_index/bowtie2_index"
-#== mouse
-#bowtie_ref: "/dartfs/rc/nosnapshots/G/GMBSR_refs/Mmusculus/GRCm39/dna_index/bowtie2_index"
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-# FUNCTIONAL ANNOTATION
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-nt_db: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/genomic_references/biobakery3/Choco/chocophlan/"
-aa_db: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/genomic_references/biobakery3/uniref/uniref"
-mode: "uniref90" 
-
+#----- HClust -----#
+distanceMetric: "braycurtis"
+aspect_ratio: "0.5"
+label_size: "10"
+max_label_len: "100"
+minv: "0.1"
+dpi: "300"
 
