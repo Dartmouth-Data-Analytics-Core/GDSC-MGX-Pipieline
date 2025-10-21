@@ -1,0 +1,7 @@
+.snakemake/*
+filtered_fq/*
+function/*
+log/*
+results/*
+taxonomy/*
+tmp/*
