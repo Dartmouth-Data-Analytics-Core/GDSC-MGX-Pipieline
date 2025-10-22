@@ -23,6 +23,7 @@ filtered = projDir + "filtered_fq/"
 taxonomy = projDir + "taxonomy/"
 function = projDir + "function/"
 results = projDir + "results/"
+figures = projDir + "Figures/"
 
 #----- Make necessary directories
 dir_log = projDir + "log/"
@@ -39,6 +40,7 @@ rule all:
     input:
         #----- KneadData outputs
         expand(filtered + "{sample}.fastq.gz", sample = sample_list),
+        figures + "KneadData_Diagnostics.png",
 
         #----- Taxonomy outputs
         expand(taxonomy + "{sample}-profiled_metagenome.txt", sample = sample_list),
@@ -63,6 +65,7 @@ rule all:
         results + "merged_pathabundances_cpm_named.txt",
         results + "merged_pathcoverages_cpm_named.txt",
         results + "merged_taxonomic_profiles.tsv"
+
 
 #----- Filter host reads with Kneaddata
 rule filter:
@@ -120,6 +123,21 @@ rule filter:
         fi
 
 """
+
+#----- Rule to plot kneadData diagnostics
+rule plot_filtering:
+    input:
+        expand(filtered + "{sample}.fastq.gz", sample = sample_list)    
+    output:
+        figures + "KneadData_Diagnostics.png"
+    conda: "r-plotting"
+    resources: cpus="40", maxtime="20:00:00", mem_mb="60gb"
+    shell: """
+    
+    #----- Run plotting script
+    Rscript scripts/plot_kneadData.R
+
+    """
 
 #----- Rule to assign taxonomy
 rule taxonomy:
@@ -298,7 +316,7 @@ rule infer_taxonomy_from_function:
     shell: """
     
     #----- Infer taxonomy
-    humann_infer_taxonomy -i {input.rn_gfs} -r {params.taxons}
+    humann_infer_taxonomy -i {input.rn_gfs} -d {params.taxons} > {output.taxProfiles}
     
     """
 
