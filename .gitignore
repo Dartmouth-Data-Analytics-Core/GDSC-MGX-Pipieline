@@ -5,3 +5,4 @@ log/*
 results/*
 taxonomy/*
 tmp/*
+*.out
