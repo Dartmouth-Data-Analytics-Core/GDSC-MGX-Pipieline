@@ -30,3 +30,4 @@ dependencies:
   - r-cli
   - r-magrittr
   - r-remotes
+  - r-vegan
