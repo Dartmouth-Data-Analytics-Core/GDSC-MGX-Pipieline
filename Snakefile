@@ -69,6 +69,19 @@ rule all:
         results + "merged_pathabundances_cpm_named.txt",
         results + "merged_pathcoverages_cpm_named.txt",
         results + "merged_taxonomic_profiles.tsv"
+    output:
+        results + "Species_Shannon_Diversity_Per_Sample.png",
+        results + "Genus_Shannon_Diversity_Per_Sample.png"
+    params:
+        sample_csv = config["sample_csv"]
+    conda: "r-plotting"
+    resources: cpus="10", maxtime="7:00:00", mem_mb="60gb"
+    shell: """
+    
+        #----- Run Alpha diversity
+        Rscript scripts/plot_alpha.R {params.sample_csv}
+
+    """
 
 
 #----- Filter host reads with Kneaddata
