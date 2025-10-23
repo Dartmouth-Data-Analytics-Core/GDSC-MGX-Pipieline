@@ -21,6 +21,7 @@ projDir = config["proj_dir"] + '/'
 raw = projDir + "raw_data/"
 filtered = projDir + "filtered_fq/"
 taxonomy = projDir + "taxonomy/"
+centrifuger = projDir + "centrifuger/"
 function = projDir + "function/"
 results = projDir + "results/"
 figures = projDir + "Figures/"
@@ -44,6 +45,9 @@ rule all:
 
         #----- Taxonomy outputs
         expand(taxonomy + "{sample}-profiled_metagenome.txt", sample = sample_list),
+        expand(centrifuger + "{sample}_centrifuger.txt", sample = sample_list),
+        expand(centrifuger + "{sample}_centrifugert_quant.tsv", sample = sample_list),
+        expand(centrifuger + "{sample}_centrifguer_kreport.tsv", sample = sample_list),
         results + "merged_abundance_table.txt",
         results + "merged_genus_abundance_table.txt",
         results + "merged_species_abundance_table.txt",
@@ -134,10 +138,91 @@ rule plot_filtering:
     resources: cpus="40", maxtime="20:00:00", mem_mb="60gb"
     shell: """
     
-    #----- Run plotting script
-    Rscript scripts/plot_kneadData.R
+        #----- Run plotting script
+        Rscript scripts/plot_kneadData.R
 
     """
+
+#----- Rule to run centrifuger
+rule centrifuger:
+    output:
+        tax_txt = centrifuger + "{sample}_centrifuger.txt",
+    params:
+        sample = lambda wildcards: wildcards.sample,
+        R1 = lambda wildcards: samples_df.loc[wildcards.sample, "fastq_1"],
+        R2 = lambda wildcards: samples_df.loc[wildcards.sample, "fastq_2"] if config["layout"]=="paired" else "None",
+        layout = config["layout"],
+        cfrPath = config["centrifuger"],
+        cfrIdx = config["cfr_idx"],
+    conda: "centrifuger"
+    threads: 8
+    resources: cpus="40", maxtime="20:00:00", mem_mb="60gb"
+    shell: """
+
+        echo {params.sample}
+        if [ {params.layout} == "single" ]
+        then
+            #== Run in single-end mode
+            {params.cfrPath} \
+                -1 {params.R1} \
+                -x {params.cfrIdx} \
+                -t {threads} > {output.tax_txt}
+
+        else
+
+            #== Run in paired-end mode
+            {params.cfrPath} \
+                -1 {params.R1} \
+                -2 {params.R2} \
+                -x {params.cfrIdx} \
+                -t {threads} > {output.tax_txt}
+
+        fi
+
+    """
+
+#----- Rule to run centrifuger-quant
+rule centrifuger_quant:
+    input:
+        tax_txt = centrifuger + "{sample}_centrifuger.txt",
+    output:
+        quant = centrifuger + "{sample}_centrifugert_quant.tsv",
+    params:
+        cfrIdx = config["cfr_idx"],
+        minScore = config["minScore"]
+    conda: "centrifuger"
+    resources: cpus="40", maxtime="20:00:00", mem_mb="60gb",
+    shell: """
+    
+        #== Run quant
+        centrifuger-quant \
+            -c {input.tax_txt} \
+            -x {params.cfrIdx} > {output.quant}
+    
+    """
+
+#----- Rule to run centrifuger-kreport
+rule centrifuger_kreport:
+    input:
+        tax_txt = centrifuger + "{sample}_centrifuger.txt",
+    output:
+        kreport = centrifuger + "{sample}_centrifguer_kreport.tsv"
+    params:
+        cfr_kreport = config["cfr_kreport"],
+        cfrIdx = config["cfr_idx"],
+        minScore = config["minScore"]
+    conda: "centrifuger"
+    resources: cpus="40", maxtime="20:00:00", mem_mb="60gb"
+    shell: """
+    
+        #== Run Kreport
+        {params.cfr_kreport} \
+            -x {params.cfrIdx} \
+            --min-score {params.minScore} \
+            {input.tax_txt} > {output.kreport}
+    
+    """
+
 
 #----- Rule to assign taxonomy
 rule taxonomy:
@@ -148,7 +233,8 @@ rule taxonomy:
     params:
         metaphlan_path = config["metaphlan_path"],
         metaphlan_db = config["metaphlan_db"],
-        metaphlan_analysis_type = config["metaphlan_analysis_type"]
+        metaphlan_analysis_type = config["metaphlan_analysis_type"],
+        mpIndex = config["mpIndex"]
     conda:
         "metaphlan",
     resources: cpus="40", maxtime="20:00:00", mem_mb="60gb",
@@ -158,7 +244,9 @@ rule taxonomy:
             --input_type fastq \
             -o {output[0]} \
             --bowtie2db {params.metaphlan_db} \
-            -t {params.metaphlan_analysis_type}
+            -x {params.mpIndex} \
+            -t {params.metaphlan_analysis_type} \
+            --offline
       
 """
 
@@ -172,8 +260,8 @@ rule merge_abundances:
     resources: cpus="40", maxtime="20:00:00", mem_mb="60gb"
     shell: """
     
-    #----- Merge metaphlan tables
-    merge_metaphlan_tables.py {input} > {output}
+        #----- Merge metaphlan tables
+        merge_metaphlan_tables.py {input} > {output}
     
     """
 
@@ -188,20 +276,20 @@ rule extract_genus_species:
     resources: cpus="40", maxtime="20:00:00", mem_mb="60gb"
     shell: """
     
-    #----- Split based on taxonomic ranks to species
-    grep -E "s__|SRS" {input[0]} \
-    | grep -v "t__" \
-    | sed "s/^.*|//g" \
-    | sed "s/SRS[0-9]*-//g" \
-    > {output.species}
+        #----- Split based on taxonomic ranks to species
+        grep -E "s__|SRS" {input[0]} \
+        | grep -v "t__" \
+        | sed "s/^.*|//g" \
+        | sed "s/SRS[0-9]*-//g" \
+        > {output.species}
 
-    #----- Split based on taxonomic ranks to genus
-    grep -E "g__|SRS" {input[0]} \
-    | grep -v "t__" \
-    | grep -v "s__" \
-    | sed "s/^.*|//g" \
-    | sed "s/SRS[0-9]*-//g" \
-    > {output.genus}
+        #----- Split based on taxonomic ranks to genus
+        grep -E "g__|SRS" {input[0]} \
+        | grep -v "t__" \
+        | grep -v "s__" \
+        | sed "s/^.*|//g" \
+        | sed "s/SRS[0-9]*-//g" \
+        > {output.genus}
     
     """
 
@@ -250,10 +338,10 @@ rule merge_function:
     resources: cpus="40", maxtime="25:00:00", mem_mb="60gb",
     shell: """
     
-    #----- Merge humann tables
-    humann_join_tables --input function --output {output.gfs} --file_name genefamilies &&
-    humann_join_tables --input function --output {output.pas} --file_name pathabundance &&
-    humann_join_tables --input function --output {output.pcs} --file_name pathcoverage
+        #----- Merge humann tables
+        humann_join_tables --input function --output {output.gfs} --file_name genefamilies &&
+        humann_join_tables --input function --output {output.pas} --file_name pathabundance &&
+        humann_join_tables --input function --output {output.pcs} --file_name pathcoverage
 
     """
 
@@ -273,10 +361,10 @@ rule normalize_function:
     resources: cpus="40", maxtime="25:00:00", mem_mb="60gb",
     shell: """
     
-    #----- Run normalization
-    humann_renorm_table --input {input.merged_gfs} --units {params.normMethod} --output {output.cpm_gfs} &&
-    humann_renorm_table --input {input.merged_pas} --units {params.normMethod} --output {output.cpm_pas} &&
-    humann_renorm_table --input {input.merged_pcs} --units {params.normMethod} --output {output.cpm_pcs}
+        #----- Run normalization
+        humann_renorm_table --input {input.merged_gfs} --units {params.normMethod} --output {output.cpm_gfs} &&
+        humann_renorm_table --input {input.merged_pas} --units {params.normMethod} --output {output.cpm_pas} &&
+        humann_renorm_table --input {input.merged_pcs} --units {params.normMethod} --output {output.cpm_pcs}
     
     """
     
@@ -296,10 +384,10 @@ rule rename_function:
     resources: cpus="40", maxtime="25:00:00", mem_mb="60gb",
     shell: """
     
-    #----- Run renaming
-    humann_rename_table --input {input.cpm_gfs} --names {params.names} --output {output.rn_gfs} &&
-    humann_rename_table --input {input.cpm_pas} --names {params.names} --output {output.rn_pas} &&
-    humann_rename_table --input {input.cpm_pcs} --names {params.names} --output {output.rn_pcs}
+        #----- Run renaming
+        humann_rename_table --input {input.cpm_gfs} --names {params.names} --output {output.rn_gfs} &&
+        humann_rename_table --input {input.cpm_pas} --names {params.names} --output {output.rn_pas} &&
+        humann_rename_table --input {input.cpm_pcs} --names {params.names} --output {output.rn_pcs}
     
     """
 
@@ -315,8 +403,8 @@ rule infer_taxonomy_from_function:
     resources: cpus="40", maxtime="25:00:00", mem_mb="60gb",
     shell: """
     
-    #----- Infer taxonomy
-    humann_infer_taxonomy -i {input.rn_gfs} -d {params.taxons} > {output.taxProfiles}
+        #----- Infer taxonomy
+        humann_infer_taxonomy -i {input.rn_gfs} -d {params.taxons} > {output.taxProfiles}
     
     """
 

@@ -1,3 +1,3 @@
 sample_id,fastq_1,fastq_2
-S1,/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/martinez/GDSC-MGX-Pipeline/TestData/Downsampled/193258_01_S1_R1_001.fastq.gz,/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/martinez/GDSC-MGX-Pipeline/TestData/Downsampled/193258_01_S1_R2_001.fastq.gz
-S2,/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/martinez/GDSC-MGX-Pipeline/TestData/Downsampled/193258_02_S2_R1_001.fastq.gz,/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/martinez/GDSC-MGX-Pipeline/TestData/Downsampled/193258_02_S2_R2_001.fastq.gz
+S1,/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/martinez/GDSC-MGX-Pipeline/data/193258_01_S1_R1_001.fastq.gz,/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/martinez/GDSC-MGX-Pipeline/data/193258_01_S1_R2_001.fastq.gz
+S2,/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/martinez/GDSC-MGX-Pipeline/data/193258_02_S2_R1_001.fastq.gz,/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/martinez/GDSC-MGX-Pipeline/data/193258_02_S2_R2_001.fastq.gz

@@ -25,15 +25,20 @@ taxons: "uniref90-tol-lca"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # TOOLING AND DATABASES
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-#----- Biobakery tools -----#
+#----- Biobakery tools / CFR -----#
 kneaddata_path: "kneaddata"
 metaphlan_path: "metaphlan"
 humann_path: "humann"
+centrifuger: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/shared-software/tools/binaries/centrifuger"
+cfr_kreport: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/shared-software/tools/binaries/centrifuger-kreport-1.0.3"
 
-#----- Biobakery databases -----#
+#----- Biobakery / CFR databases -----#
 nt_db: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/genomic_references/biobakery3/Choco/chocophlan/"
 aa_db: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/genomic_references/biobakery3/uniref/uniref"
-metaphlan_db: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/owen/sharedconda/miniconda/envs/metaphlan/lib/python3.10/site-packages/metaphlan/metaphlan_databases"
+metaphlan_db: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/owen/sharedconda/miniconda/envs/metaphlan/lib/python3.10/site-packages/metaphlan/metaphlan_databases/"
+mpIndex: "mpa_vOct22_CHOCOPhlAnSGB_202212"
+cfr_idx: "/dartfs/rc/nosnapshots/G/GMBSR_refs/mgx_db/refseq_abvh"
+minScore: "1225"
 
 #----- Bowtie references -----#
 bowtie_ref: "/dartfs/rc/nosnapshots/G/GMBSR_refs/Hsapiens/GRCh38/dna_index/bowtie2_index"

@@ -21,15 +21,15 @@ source /optnfs/common/miniconda3/etc/profile.d/conda.sh
 conda activate /dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/owen/sharedconda/miniconda/envs/seqtk_env
 
 #----- Specify input directory and output directory
-INPUT="/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/martinez/GDSC-MGX-Pipeline/TestData/Downsamples"
-OUTPUT="/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/martinez/GDSC-MGX-Pipeline/TestData/"
+INPUT="/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/martinez/GDSC-MGX-Pipeline/data"
+OUTPUT="/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/martinez/GDSC-MGX-Pipeline/data"
 cd "$INPUT"
 
 #----- Begin the downsampling
-seqtk sample -s 42 193258_01_S1_R1_001.fastq.gz 0.1 | gzip > "$OUTPUT/193258_01_S1_R1_001.fastq.gz"
-seqtk sample -s 42 193258_01_S1_R2_001.fastq.gz 0.1 | gzip > "$OUTPUT/193258_01_S1_R2_001.fastq.gz"
-seqtk sample -s 42 193258_02_S2_R1_001.fastq.gz 0.1 | gzip > "$OUTPUT/193258_02_S2_R1_001.fastq.gz"
-seqtk sample -s 42 193258_02_S2_R2_001.fastq.gz 0.1 | gzip > "$OUTPUT/193258_02_S2_R2_001.fastq.gz"
+seqtk sample -s 42 193258_01_S1_R1_001.fastq.gz 0.2 | gzip > "$OUTPUT/193258_01_S1_R1_001.fastq.gz"
+seqtk sample -s 42 193258_01_S1_R2_001.fastq.gz 0.2 | gzip > "$OUTPUT/193258_01_S1_R2_001.fastq.gz"
+seqtk sample -s 42 193258_02_S2_R1_001.fastq.gz 0.2 | gzip > "$OUTPUT/193258_02_S2_R1_001.fastq.gz"
+seqtk sample -s 42 193258_02_S2_R2_001.fastq.gz 0.2 | gzip > "$OUTPUT/193258_02_S2_R2_001.fastq.gz"
 
 echo "Downsampling completed."
 echo "End time: $(date)"
