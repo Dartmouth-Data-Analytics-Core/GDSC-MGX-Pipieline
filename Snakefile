@@ -4,6 +4,11 @@
 #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
+#≠≠≠≠≠ To Do ≠≠≠≠≠#
+# Method for extracting uniprot IDs for groups of interest and then searching in Centrifuger output
+# Need some way of memory management for temporary humann bowtie tsvs once queried (delete?)
+
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # SET GLOBAL SCOPE PYTHON VARIABLES (EXECUTED BEFORE SNAKEMAKE)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -57,6 +62,7 @@ rule all:
         expand(function + "{sample}_genefamilies.tsv", sample = sample_list),
         expand(function + "{sample}_pathcoverage.tsv", sample = sample_list),
         expand(function + "{sample}_pathabundance.tsv", sample = sample_list),
+        expand(function + "{sample}_bowtie2_aligned.tsv", sample = sample_list),
         function + "merged_genefamilies.txt",
         function + "merged_pathabundances.txt",
         function + "merged_pathcoverages.txt",
@@ -315,7 +321,8 @@ rule function:
         function + "{sample}-humann.log",
         function + "{sample}_genefamilies.tsv",
         function + "{sample}_pathcoverage.tsv",
-        function + "{sample}_pathabundance.tsv"
+        function + "{sample}_pathabundance.tsv",
+        function + "{sample}_bowtie2_aligned.tsv"
     params:
         humann_path = config["humann_path"],
         sample = lambda wildcards: wildcards.sample,
@@ -333,8 +340,13 @@ rule function:
 			--taxonomic-profile {input[1]} \
 			--search-mode {params.mode} \
 			--nucleotide-database {params.nt_db} \
-			--remove-temp-output \
-			--protein-database {params.aa_db}
+			--protein-database {params.aa_db} &&
+        
+        #----- Move temp files
+        mv function/{params.sample}_humann_temp/{params.sample}_bowtie2_aligned.tsv function/{params.sample}_bowtie2_aligned.tsv &&
+
+        #----- Remove temp folders
+        rm -r function/{params.sample}_humann_temp
    """
 
 #----- Rule to join functional tables
