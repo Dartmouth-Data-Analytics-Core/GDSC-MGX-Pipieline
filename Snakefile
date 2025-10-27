@@ -433,3 +433,28 @@ rule infer_taxonomy_from_function:
     
     """
 
+## For linking taxonomy and function, the file we want to use (i think) is the results/merged_genefamilies_cpm_named.txt
+# I think we can do something like:
+
+#== grep -i "Fucose isomerase" results/merged_genefamilies_cpm_named.txt > TEST.txt
+# This gives us a glance at what the normalized abundances are for these functions, as well as provides us a list of IDs
+
+# Now we need to grab those uniref IDs and store them as a list
+#== cut -f1 TEST.txt | sed 's/:.*//' | sort -u > TEST2.txt
+
+# Now, we need to grep for these in the bowtie2 files
+#== grep "$i" function/S1_bowtie2_aligned.tsv | cut -d"." -f1,2 >> TEST3.txt; done
+# cut -f1 TEST3.txt > TEST3b.txt
+# cut -d':' -f1-7 TEST3b.txt > TEST3c.txt
+# sed 's/\.[0-9]\+$//' TEST3c.txt > TEST3d.txt
+# For this step, we will need to figure out a way to iterate through all samples bowtie files
+
+#----- Are these headers the same each time?
+
+# Now we need to look for these readIDs in the centrifuger file
+#== grep -F -f TEST3d.txt centrifuger/S1_centrifuger.txt > TEST4.txt
+# Once again, need to find a way to iteate through the centrifuger files
+
+# Now we get the Tax is from centrifuger.txt which we can use to profile the centrifuger kreport
+# cut -f3 TEST4.txt | sort | uniq -c > TEST5.txt
+# awk 'NR==FNR {quant[$2]=$1; next} {print $0, ($2 in quant ? quant[$2] : 0)}' centrifuger/S1_centrifuger_quant.tsv TEST5.txt > TEST6.txt
