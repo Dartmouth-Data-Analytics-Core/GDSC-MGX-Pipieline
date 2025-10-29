@@ -22,7 +22,7 @@ source /optnfs/common/miniconda3/etc/profile.d/conda.sh
 conda activate /dartfs/rc/nosnapshots/G/GMBSR_refs/envs/snakemake
 
 #----- Run Snakemake workflow
-snakemake -s Snakefile \
+snakemake -s workflows/Snakefile \
 	--conda-frontend conda \
 	--use-conda \
 	--profile cluster_profile \

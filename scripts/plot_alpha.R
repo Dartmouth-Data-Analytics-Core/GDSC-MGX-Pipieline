@@ -21,6 +21,7 @@ library(tidyr)
 library(ggrepel)
 
 #----- Specify outDir path
+figDir <- "Figures/"
 resultsDir <- "results/"
 
 #----- Set command line args
@@ -135,7 +136,7 @@ x <- ggplot(specAlpha, aes(x = Sample, y = Shannon)) +
     plot.title = element_text(face = "bold", hjust = 0.5),
     legend.title = element_blank()
   )
-ggsave(paste0(resultsDir, "Species_Shannon_Diversity_Per_Sample.png"), x)
+ggsave(paste0(figDir, "Species_Shannon_Diversity_Per_Sample.png"), x)
 
 #----- Plot Genus Shannon
 y <- ggplot(genusAlpha, aes(x = Sample, y = Shannon)) +
@@ -153,4 +154,4 @@ y <- ggplot(genusAlpha, aes(x = Sample, y = Shannon)) +
         plot.title = element_text(face = "bold", hjust = 0.5),
         legend.title = element_blank()
     )
-ggsave(paste0(resultsDir, "Genus_Shannon_Diversity_Per_Sample.png"), x)
+ggsave(paste0(figDir, "Genus_Shannon_Diversity_Per_Sample.png"), x)

@@ -31,23 +31,16 @@ function = projDir + "function/"
 results = projDir + "results/"
 figures = projDir + "Figures/"
 
-#----- Make necessary directories
-dir_log = projDir + "log/"
-if not os.path.isdir(dir_log):
-    os.mkdir(dir_log)
+#----- Create necessary directories
 tmp = config["tmp_dir"]
 if not os.path.isdir(tmp):
     os.mkdir(tmp)
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-# SNAKEMAKE RULES
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#    
-rule all:
-    input:
+#----- Define all outputs
+all_outputs = [
         #----- KneadData outputs
         expand(filtered + "{sample}.fastq.gz", sample = sample_list),
         figures + "KneadData_Diagnostics.png",
-
         #----- Taxonomy outputs
         expand(taxonomy + "{sample}-profiled_metagenome.txt", sample = sample_list),
         expand(centrifuger + "{sample}_centrifuger.txt", sample = sample_list),
@@ -56,7 +49,6 @@ rule all:
         results + "merged_abundance_table.txt",
         results + "merged_genus_abundance_table.txt",
         results + "merged_species_abundance_table.txt",
-
         #----- Function outputs
         expand(function + "{sample}-humann.log", sample = sample_list),
         expand(function + "{sample}_genefamilies.tsv", sample = sample_list),
@@ -69,15 +61,31 @@ rule all:
         function + "merged_genefamilies_cpm.txt",
         function + "merged_pathabundances_cpm.txt",
         function + "merged_pathcoverages_cpm.txt",
-
         #----- Functional results
         results + "merged_genefamilies_cpm_named.txt",
         results + "merged_pathabundances_cpm_named.txt",
         results + "merged_pathcoverages_cpm_named.txt",
         results + "merged_taxonomic_profiles.tsv"
+]
+#----- Conditionally include extra module
+if config.get("run_tax2Func", False):
+    include: "function_to_taxonomy.smk"
+    all_outputs += [
+        tax2func + "function_subset_complete.txt",
+        tax2func + "uniref_ID_list.txt",
+        expand(tax2func + "{sample}_readIDs.txt", sample = sample_list),
+        expand(tax2func + "{sample}_centrifuger_matches.txt", sample = sample_list)
+    ]
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+# SNAKEMAKE RULES
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#    
+rule all:
+    input:
+        all_outputs
     output:
-        results + "Species_Shannon_Diversity_Per_Sample.png",
-        results + "Genus_Shannon_Diversity_Per_Sample.png"
+        figures + "Species_Shannon_Diversity_Per_Sample.png",
+        figures + "Genus_Shannon_Diversity_Per_Sample.png"
     params:
         sample_csv = config["sample_csv"]
     conda: "r-plotting"
