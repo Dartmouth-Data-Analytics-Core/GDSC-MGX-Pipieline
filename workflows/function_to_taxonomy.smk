@@ -103,20 +103,13 @@ rule get_readIDs:
         sample = lambda wildcards: wildcards.sample
     resources: cpus="10", maxtime="7:00:00", mem_mb="60gb"
     shell: """
+
+    grep -F -f {input.unirefs} {input.bt2} \
+    | cut -d'.' -f1 \
+    | cut -d':' -f1-7 \
+    | sed 's/\.[0-9]\+$//' \
+    > {output[0]}
     
-    #----- Grab the readIDs for reads matching uniref IDs
-    for i in `cat {input.unirefs}`; do \
-        grep "$i" {input.bt2} | \
-        cut -d"." -f1,2 >> {output[0]} ; done &&
-
-    #----- Clean (remove if sequenced in house)
-    #cut -f1 tax2Func/temp.txt > tax2Func/temp1.txt &&
-    #rm tax2Func/temp.txt &&
-    #cut -d':' -f1-7 tax2Func/temp1.txt > tax2Func/temp2.txt &&
-    #rm tax2Func/temp1.txt &&
-    #sed 's/\.[0-9]\+$//' tax2Func/temp2.txt > {output[0]} &&
-    #rm tax2Func/temp2.txt
-
     """
 
 #----- Rule to search centrifuger output for read IDs
