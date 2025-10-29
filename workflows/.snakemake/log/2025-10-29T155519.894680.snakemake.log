@@ -1,3 +1,0 @@
-WorkflowError in line 18 of /dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/martinez/GDSC-MGX-Pipeline/workflows/Snakefile:
-Workflow defines configfile config.yaml but it is not present or accessible.
-  File "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/martinez/GDSC-MGX-Pipeline/workflows/Snakefile", line 18, in <module>
