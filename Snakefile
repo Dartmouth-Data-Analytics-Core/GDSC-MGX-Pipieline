@@ -51,7 +51,7 @@ rule all:
         #----- Taxonomy outputs
         expand(taxonomy + "{sample}-profiled_metagenome.txt", sample = sample_list),
         expand(centrifuger + "{sample}_centrifuger.txt", sample = sample_list),
-        expand(centrifuger + "{sample}_centrifugert_quant.tsv", sample = sample_list),
+        expand(centrifuger + "{sample}_centrifuger_quant.tsv", sample = sample_list),
         expand(centrifuger + "{sample}_centrifguer_kreport.tsv", sample = sample_list),
         results + "merged_abundance_table.txt",
         results + "merged_genus_abundance_table.txt",
@@ -205,7 +205,7 @@ rule centrifuger_quant:
     input:
         tax_txt = centrifuger + "{sample}_centrifuger.txt",
     output:
-        quant = centrifuger + "{sample}_centrifugert_quant.tsv",
+        quant = centrifuger + "{sample}_centrifuger_quant.tsv",
     params:
         cfrIdx = config["cfr_idx"],
         minScore = config["minScore"]
@@ -433,6 +433,9 @@ rule infer_taxonomy_from_function:
     
     """
 
+
+
+#----- New snakemake module for linking function and taxonomy
 ## For linking taxonomy and function, the file we want to use (i think) is the results/merged_genefamilies_cpm_named.txt
 # I think we can do something like:
 
