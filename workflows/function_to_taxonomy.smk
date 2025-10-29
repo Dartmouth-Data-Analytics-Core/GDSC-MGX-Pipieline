@@ -52,19 +52,19 @@ term_key_map = dict(zip(term_keys, terms))
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#    
 rule final:
     input:
-        tax2func + "function_subset_complete.txt",
-        tax2func + "uniref_ID_list.txt",
-        expand(tax2func + "{sample}_readIDs.txt", sample = sample_list),
-        expand(tax2func + "{sample}_centrifuger_matches.txt", sample = sample_list)
+        expand(tax2func + "function_subset_{term}_complete.txt", term = term_keys),
+        expand(tax2func + "uniref_ID_list_{term}.txt", term = term_keys),
+        expand(tax2func + "{sample}_readIDs_{term}.txt", sample = sample_list, term = term_keys),
+        expand(tax2func + "{sample}_centrifuger_{term}_matches.txt", sample = sample_list, term = term_keys)
         
 #----- Rule to subset gene-families to specific functions
 rule subset_function:
     input:
         results + "merged_genefamilies_cpm_named.txt"
     output:
-        tax2func + "function_subset_complete.txt"
+        tax2func + "function_subset_{term}_complete.txt"
     params:
-        function_term = config["function_term"]
+        function_term = lambda wildcards: term_key_map[wildcards.term]
     resources: cpus="10", maxtime="7:00:00", mem_mb="60gb"
     shell: """
 
@@ -80,9 +80,11 @@ rule subset_function:
 #----- Rule to grab uniref IDs
 rule extract_uniref_IDs:
     input:
-        tax2func + "function_subset_complete.txt"
+        tax2func + "function_subset_{term}_complete.txt"
     output:
-        tax2func + "uniref_ID_list.txt"
+        tax2func + "uniref_ID_list_{term}.txt"
+    params:
+        function_term = lambda wildcards: term_key_map[wildcards.term]
     resources: cpus="10", maxtime="7:00:00", mem_mb="60gb"
     shell: """
     
@@ -96,9 +98,9 @@ rule extract_uniref_IDs:
 rule get_readIDs:
     input:
         bt2 = function + "{sample}_bowtie2_aligned.tsv",
-        unirefs = tax2func + "uniref_ID_list.txt"
+        unirefs = tax2func + "uniref_ID_list_{term}.txt"
     output:
-        tax2func + "{sample}_readIDs.txt"
+        tax2func + "{sample}_readIDs_{term}.txt"
     params:
         sample = lambda wildcards: wildcards.sample
     resources: cpus="10", maxtime="7:00:00", mem_mb="60gb"
@@ -115,11 +117,11 @@ rule get_readIDs:
 #----- Rule to search centrifuger output for read IDs
 rule search_centrifuger:
     input:
-        readIDs = tax2func + "{sample}_readIDs.txt",
+        readIDs = tax2func + "{sample}_readIDs_{term}.txt",
         cfr = centrifuger + "{sample}_centrifuger.txt",
         quant = centrifuger + "{sample}_centrifuger_quant.tsv"
     output:
-        matches = tax2func + "{sample}_centrifuger_matches.txt"
+        matches = tax2func + "{sample}_centrifuger_{term}_matches.txt"
     params:
         sample = lambda wildcards: wildcards.sample
     resources: cpus="10", maxtime="7:00:00", mem_mb="60gb"

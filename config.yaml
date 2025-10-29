@@ -15,7 +15,7 @@ tmp_dir: "/dartfs-hpc/rc/lab/G/GMBSR_bioinfo/misc/martinez/GDSC-MGX-Pipeline/tmp
 
 #----- Function of interest (IF RUNNING FUNCTION_TO_TAXONOMY) -----#
 run_tax2Func: True
-function_term: "Fucose isomerase"
+function_term: ["Acetate kinase", "Butyrate kinase"]
 
 #----- Metaphlan -----#
 metaphlan_analysis_type: "rel_ab_w_read_stats"  # rel_ab

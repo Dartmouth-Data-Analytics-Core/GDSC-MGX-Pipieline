@@ -71,10 +71,10 @@ all_outputs = [
 if config.get("run_tax2Func", False):
     include: "function_to_taxonomy.smk"
     all_outputs += [
-        tax2func + "function_subset_complete.txt",
-        tax2func + "uniref_ID_list.txt",
-        expand(tax2func + "{sample}_readIDs.txt", sample = sample_list),
-        expand(tax2func + "{sample}_centrifuger_matches.txt", sample = sample_list)
+        expand(tax2func + "function_subset_{term}_complete.txt", term = term_keys),
+        expand(tax2func + "uniref_ID_list_{term}.txt", term = term_keys),
+        expand(tax2func + "{sample}_readIDs_{term}.txt", sample = sample_list, term = term_keys),
+        expand(tax2func + "{sample}_centrifuger_{term}_matches.txt", sample = sample_list, term = term_keys)
     ]
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
