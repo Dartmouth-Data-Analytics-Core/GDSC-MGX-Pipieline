@@ -14,7 +14,9 @@ This pipeline makes use of [The Biobakery](https://github.com/biobakery) The maj
 - Taxonomic classification using [*metaphlan*](https://huttenhower.sph.harvard.edu/metaphlan/) and [*centrifuger*](https://github.com/mourisl/centrifuger)
 - Function classification using [*humann*](https://huttenhower.sph.harvard.edu/humann/) 
 - Alpha diversity calculation
--*Optional* Linking taxanomy and function
+- *Optional* Linking taxanomy and function
+
+<img src="img/annotated_rulegraph.png" alt="Description" width="500" height="500"/>
 
 ## Implementation
 
