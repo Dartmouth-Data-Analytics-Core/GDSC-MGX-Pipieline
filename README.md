@@ -16,8 +16,6 @@ This pipeline makes use of [The Biobakery](https://github.com/biobakery) The maj
 - Alpha diversity calculation
 - *Optional* Linking taxanomy and function
 
-<img src="img/annotated_rulegraph.png" alt="Description" width="500" height="500"/>
-
 ## Implementation
 
 This pipeline uses Snakemake to submit jobs to the scheduler, or spawn processes on a single machine, and requires serveral variables to be configured by the user when running the pipeline:
@@ -48,3 +46,6 @@ sbatch job.script.sh
 ```
 
 To run the function to taxonomy module as a stand-alone pipeline instead as part of the main pipeline, set `run_tax2Func: False` in `config.yaml`.
+
+<img src="img/rulegraph.png" alt="Description" width="900" height="900"/>
+
