@@ -31,7 +31,7 @@ All these settings can be modified under the *General settings* tab within `conf
 
 - **run_tax2Func:** Boolean, one of "True" or "False" of whether to not to run the additional Snakemake module `workflows/function_to_taxonomy.smk` as part of the main workflow. *Note, this module can be ran as a standalone pipeline as well following the main pipeline*
 
-- **function_term:** Optional. A functional term of which to link taxonomy. This must be formatted identically to the Humann3 output.
+- **function_term:** Optional. A functional term of which to link taxonomy. This must be formatted identically to the Humann3 output, OR a list of terms formatted as such ["termA", "termB", "termC"]
 
 - **metaphlan_analysis_type:** One of "rel_ab_w_read_stats" for estimated counts as well as relative abundance, or "rel_ab" for just relative abundances. See `metaphlan -h` for a list of additional possible arguments.
 
